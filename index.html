@@ -13,6 +13,10 @@
 	    createjs.Sound.registerSound("assets/theme-1.mp3", "theme-1");
 	    createjs.Sound.registerSound("assets/paddle-hit.mp3", "paddle-hit");
 	    createjs.Sound.registerSound("assets/paddle-hit-2.mp3", "paddle-hit-2");
+	    createjs.Sound.registerSound("assets/wall-hit.mp3", "wall-hit");
+	    createjs.Sound.registerSound("assets/death-song.mp3", "death-song");
+	    createjs.Sound.registerSound("assets/game-over.mp3", "game-over");
+	    createjs.Sound.registerSound("assets/you-won.mp3", "you-won");
 	  }
 
 	  function playSound(sound)
@@ -89,17 +93,17 @@
 			// });
 
 			// monster = new createjs.Sprite(spritesheet);
-			console.log('***monster: ', monster);
+			// console.log('***monster: ', monster);
 			// monster.animations[].speed = 0.2;
 			// monster.x = stage.canvas.width/2;
 			// monster.y = stage.canvas.height + 32;
 			// monster.gotoAndPlay('run');
 			// stage.addChild(monster);
 
-			// var music = new Audio('assets/theme-1.mp3');
-			// music.loop = true;
-			// music.play();
-			playSound('theme-1');
+			var music = new Audio('assets/theme-1.mp3');
+			music.loop = true;
+			music.play();
+			// playSound('theme-1');
 
 			window.onkeyup = keyUpHandler;
 			window.onkeydown = keyDownHandler;
@@ -169,6 +173,10 @@
 					addToScore(100);
 					destroyBrick(bricks[i]);
 					bricks.splice(i,1); // remove that brick from the array
+					if(bricks.length == 0) {
+						youWon();
+					}
+					console.log('***bricks: ', bricks);
 					i--;
 				}
 			}
@@ -179,16 +187,19 @@
 
 			// Check if we've reached the walls
 			if(ball.x + BALL_RADIUS >= stage.canvas.width) { // hit right wall
+				playSound('wall-hit');
 				ball.x = stage.canvas.width - BALL_RADIUS;
 				ball.right = false;
 			}
 
 			if(ball.x - BALL_RADIUS <= 0) { // hit left wall
+				playSound('wall-hit');
 				ball.x = BALL_RADIUS;
 				ball.right = true;
 			}
 
 			if(ball.y - BALL_RADIUS <= 0) { // hit top wall
+				playSound('wall-hit');
 				ball.y = BALL_RADIUS;
 				ball.up = false;
 			}
@@ -200,6 +211,23 @@
 
 			ball.lastX = ball.x;
 			ball.lastY = ball.y;
+		}
+
+		function youWon() {
+			playSound('you-won');
+			setTimeout(function() {
+				removeAllBricks();
+				createBrickGrid();
+				startLevel();
+				score = 0;
+				lives = 3;
+				gameStarted = false;
+				updateStatusLine();
+
+				// createScoreText();
+
+				addToScore(0);
+			},5000);
 		}
 
 		function startLevel() {
@@ -284,6 +312,9 @@
 
 		function loseLife() {
 			lives--;
+			console.log('***lives: ', lives);
+			if(lives > 0)
+				playSound('death-song');
 			updateStatusLine
 			ball.xSpeed = 0;
 			ball.ySpeed = 0;
@@ -296,6 +327,8 @@
 					highScore = score;
 					localStorage.highScore = score;
 				}
+				console.log('***play game over');
+				playSound('game-over');
 				lives = 3;
 				score = 0;
 				// stage.removeAllChildren();
@@ -418,6 +451,14 @@
 
 		function removeBrickFromScreen(brick) {
 			stage.removeChild(brick);
+		}
+
+		function removeAllBricks() {
+			for(var i=0; i < bricks.length; i++) {
+				stage.removeChild(bricks[i]);
+			}
+			bricks = [];
+			console.log('***remove all bricks bricks: ', bricks);
 		}
 
 		function handleFileProgress(event) {
