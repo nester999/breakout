@@ -22,14 +22,14 @@
 
 	  function playSound(sound)
 	  {
-	  	console.log('HEY');
+	  	// console.log('HEY');
 	    createjs.Sound.play(sound);
 	  }
 	</script>
 </head>
 <body onload="init();">
 	<!-- <button onclick="playSound();">Play Sound</button> -->
-	<canvas id="testCanvas" width="1000" height="500" style="background-color: #ddd"></canvas>
+	<canvas id="testCanvas" width="1000" height="500" style="background: url('assets/space-bg.jpg'); background-repeat: no-repeat; background-size: contain;"></canvas>
 	<script>
 		// preload.js section
 		var queue = new createjs.LoadQueue();
@@ -47,6 +47,8 @@
 		var score = 0;
 		var lives = 3;
 		var scoreText;
+		var youWonText;
+		var youLostText;
 		var gameStarted = false;
 		const KEYCODE_LEFT = 37;
 		const KEYCODE_RIGHT = 39;
@@ -177,7 +179,7 @@
 					if(bricks.length == 0) {
 						youWon();
 					}
-					console.log('***bricks: ', bricks);
+					// console.log('***bricks: ', bricks);
 					i--;
 				}
 			}
@@ -232,6 +234,11 @@
 
 		function youWon() {
 			playSound('you-won');
+			youWonText = new createjs.Text("", "48px Arial", "#EEE");
+			youWonText.x = stage.canvas.width/3;
+			youWonText.y = 250;
+			youWonText.text = "You WON!!!"
+			stage.addChild(youWonText);
 			// alert('You Won! Congratulations Cadet');
 			setTimeout(function() {
 				removeAllBricks();
@@ -241,7 +248,7 @@
 				lives = 3;
 				gameStarted = false;
 				updateStatusLine();
-
+				stage.removeChild(youWonText);
 				// createScoreText();
 
 				addToScore(0);
@@ -251,7 +258,7 @@
 		function startLevel() {
 			moveAmount = 5;
 			if(!gameStarted) {
-				console.log("GAME STARTED");
+				// console.log("GAME STARTED");
 				gameStarted = true;
 				ball.xSpeed = 5;
 				ball.ySpeed = 5;
@@ -323,14 +330,14 @@
 		}
 
 		function createScoreText() {
-			scoreText = new createjs.Text("", "16px Arial", "#000");
+			scoreText = new createjs.Text("", "16px Arial", "#EEE");
 			scoreText.y = stage.canvas.height - 16;
 			stage.addChild(scoreText);
 		}
 
 		function loseLife() {
 			lives--;
-			console.log('***lives: ', lives);
+			// console.log('***lives: ', lives);
 			if(lives > 0)
 				playSound('death-song');
 			updateStatusLine
@@ -345,7 +352,7 @@
 					highScore = score;
 					localStorage.highScore = score;
 				}
-				console.log('***play game over');
+				// console.log('***play game over');
 				playSound('game-over');
 				lives = 3;
 				score = 0;
@@ -461,7 +468,7 @@
 
 		function createPaddle() {
 			paddle = new createjs.Shape();
-			paddle.graphics.beginFill('#000000').drawRect(0, 0, PADDLE_WIDTH, PADDLE_HEIGHT);
+			paddle.graphics.beginFill('MediumAquaMarine').drawRoundRectComplex(0, 0, PADDLE_WIDTH, PADDLE_HEIGHT, 5,5,5,5);
 			paddle.x = stage.canvas.width/2 - PADDLE_WIDTH/2;
 			paddle.y = stage.canvas.height * 0.9;
 
@@ -488,7 +495,7 @@
 				stage.removeChild(bricks[i]);
 			}
 			bricks = [];
-			console.log('***remove all bricks bricks: ', bricks);
+			// console.log('***remove all bricks bricks: ', bricks);
 		}
 
 		function handleFileProgress(event) {
