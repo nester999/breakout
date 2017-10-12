@@ -12,7 +12,7 @@
 	      // A sound has been preloaded.
 	      console.log("Preloaded:", event.id, event.src);
 	  }
-	  
+
 	  function loadSound()
 	  {
 	    createjs.Sound.registerSound("assets/crumble-hit.mp3", "crumble-hit");
@@ -78,9 +78,11 @@
 			createScoreText();
 			addToScore(0);
 
-			var music = new Audio('assets/theme-1.mp3');
-			music.loop = true;
-			music.play();
+			setTimeout(function() {
+				var music = new Audio('assets/theme-1.mp3');
+				music.loop = true;
+				music.play();
+			}, 3000);
 			// playSound('theme-1');
 
 			window.onkeyup = keyUpHandler;
