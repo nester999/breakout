@@ -214,8 +214,25 @@
 			ball.lastY = ball.y;
 		}
 
+		function youLost() {
+			setTimeout(function() {
+				removeAllBricks();
+				createBrickGrid();
+				startLevel();
+				score = 0;
+				lives = 3;
+				gameStarted = false;
+				updateStatusLine();
+
+				// createScoreText();
+
+				addToScore(0);
+			},5000);
+		}
+
 		function youWon() {
 			playSound('you-won');
+			// alert('You Won! Congratulations Cadet');
 			setTimeout(function() {
 				removeAllBricks();
 				createBrickGrid();
@@ -332,6 +349,18 @@
 				playSound('game-over');
 				lives = 3;
 				score = 0;
+				// alert('You Lost!');
+				removeAllBricks();
+				createBrickGrid();
+				startLevel();
+				score = 0;
+				lives = 3;
+				gameStarted = false;
+				updateStatusLine();
+
+				// createScoreText();
+
+				addToScore(0);
 				// stage.removeAllChildren();
 				// createBrickGrid();
 			}
